@@ -45,24 +45,30 @@ export default function App() {
     return precioBase;    
   }
 
+  function calcularPrecioConInteres(precioBase) {
+    return precioBase * Math.pow((1 + interesCredito), 9);
+  }
+
   // Cálculo del impuesto
   function calcularImpuesto(precioBase) {
+    let subtotal;
     if (pago === 'contado') { 
-      return precioBase * itbms;
-    } else if (pago === 'credito') {  
-      let precioConInteres = precioBase + (precioBase * interesCredito);
-      return precioConInteres * itbms;
+      subtotal = precioBase;
+      } else if (pago === 'credito') {  
+      subtotal = calcularPrecioConInteres(precioBase);
+      }
+      return subtotal * itbms;
     }
-  }
 
   // Cálculo del total a pagar
   function calcularTotal(precioBase) {
+    let subtotal2;
     if (pago === 'contado') {
-      return precioBase + (precioBase * itbms);
-    } else if (pago === 'credito') {
-      let precioConInteres = precioBase * Math.pow((1 + interesCredito), 9); // Aplicar interés compuesto por 9 años
-      return precioConInteres + (precioConInteres * itbms);
-    }
+      subtotal2 = precioBase;
+      } else if (pago === 'credito') {
+      subtotal2 = calcularPrecioConInteres(precioBase);
+      }
+    return subtotal2 + (subtotal2 * itbms);
   }
 
   // Cálculo de la cuota mensual
@@ -97,14 +103,14 @@ export default function App() {
     
 
     let resultadoTexto = `Precio Base: $${precioBase.toFixed(2)}\n`;
-    resultadoTexto += `Impuesto (ITBMS): $${impuesto.toFixed(2)}\n\n`;
+    resultadoTexto += `ITBMS (7%): $${impuesto.toFixed(2)}\n\n`;
     resultadoTexto += `Total a Pagar: $${total.toFixed(2)}\n\n`;
   
     if (pago === 'credito') {
       const cuotaMensual = calcularCuotaMensual(total);
       const { aprobado, porcentajeSalario } = determinarAprobacion(cuotaMensual, salarioCliente);
 
-      resultadoTexto += `Cuota Mensual: $${cuotaMensual.toFixed(2)}\n`;
+      resultadoTexto += `Letra Mensual: $${cuotaMensual.toFixed(2)}\n`;
       resultadoTexto += `30% del salario: $${porcentajeSalario.toFixed(2)}\n`;
       
       setAprobacion(`Estado: ${aprobado} (Pago mensual representa el ${((cuotaMensual / salarioCliente) * 100).toFixed(2)}% del salario)`);
