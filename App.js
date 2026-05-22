@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import { Button, RadioButton } from 'react-native-paper';
 
@@ -13,7 +13,7 @@ export default function App() {
   const [pago, setPago] = useState('contado'); // 'credito' o 'contado'
   const [resultado, setResultado] = useState(null);
   const [aprobacion, setAprobacion] = useState(null);
-  
+
   // precios
   const cargoAutomatico = 1500.00; 
   const itbms = 0.07;
@@ -92,7 +92,7 @@ export default function App() {
     const precioVehiculo = parseFloat(costoVehiculo);
     const salarioCliente = parseFloat(salario);
 
-    if (isNaN(precioVehiculo) || isNaN(salarioCliente)) {
+    if (isNaN(precioVehiculo) || (pago === 'credito' && isNaN(salarioCliente))) { //si el precio no es un número válido o si se seleccionó crédito y el salario no es un número válido, se muestra un mensaje de error
       setResultado("Por favor, ingrese valores numéricos válidos para el costo del vehículo y el salario.");
       return;
     }
@@ -148,10 +148,11 @@ export default function App() {
           keyboardType="decimal-pad"
       />
       <TextInput
-          style={styles.textInputEntrada}
-          value={salario}
+          style={pago === 'credito' ? styles.textInputEntrada : styles.textinputEntradaDisabled} // Cambia el estilo dependiendo de si el campo está habilitado o no
+          value={pago === 'credito' ? salario : ''} // Muestra el valor del salario solo si se selecciona crédito
+          editable={pago === 'credito'}
           onChangeText={setSalario}
-          placeholder={"Salario Mensual Bruto"}
+          placeholder={pago === 'credito' ? "Salario bruto mensual" : "Salario bruto mensual (No disponible)"} // Cambia el placeholder dependiendo de si el campo está habilitado o no
           placeholderTextColor="#aaa"
           keyboardType="decimal-pad"
       />
@@ -279,8 +280,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#e7e7e7',
     padding: 10,
     borderRadius: 8,
-    flexDirection: 'flex-start',
-    alignItems: 'left',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
 
@@ -290,8 +291,8 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     padding: 10,
     borderRadius: 8,
-    flexDirection: 'flex-start',
-    alignItems: 'left',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginBottom: 16,
   },
 
@@ -301,8 +302,8 @@ const styles = StyleSheet.create({
       borderWidth: 3,
       padding: 10,
       borderRadius: 8,
-      flexDirection: 'flex-start',
-      alignItems: 'left',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
       marginBottom: 16,
     },
 
@@ -357,6 +358,16 @@ const styles = StyleSheet.create({
     borderColor: "#acacac", 
     color: "#111", 
     fontSize: 16, 
+    paddingHorizontal: 15, 
+    paddingVertical:15, 
+  },
+
+  textinputEntradaDisabled: {
+    backgroundColor: "#e0e0e0", 
+    borderRadius: 15,
+    borderWidth: 1.0,
+    borderColor: "#acacac", 
+    color: "#111", 
     paddingHorizontal: 15, 
     paddingVertical:15, 
   },
