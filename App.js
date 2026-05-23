@@ -102,15 +102,13 @@ export default function App() {
     const total = calcularTotal(precioBase);
     
 
-    let resultadoTexto = `Precio Base: $${precioBase.toFixed(2)}\n`;
-    resultadoTexto += `ITBMS (7%): $${impuesto.toFixed(2)}\n\n`;
-    resultadoTexto += `Total a Pagar: $${total.toFixed(2)}\n\n`;
+    let resultadoTexto;
   
     if (pago === 'credito') {
       const cuotaMensual = calcularCuotaMensual(total);
       const { aprobado, porcentajeSalario } = determinarAprobacion(cuotaMensual, salarioCliente);
 
-      resultadoTexto += `Letra Mensual: $${cuotaMensual.toFixed(2)}\n`;
+      resultadoTexto = `Letra Mensual: $${cuotaMensual.toFixed(2)}\n`;
       resultadoTexto += `30% del salario: $${porcentajeSalario.toFixed(2)}\n`;
       
       setAprobacion(`Estado: ${aprobado} (Pago mensual representa el ${((cuotaMensual / salarioCliente) * 100).toFixed(2)}% del salario)`);
@@ -119,6 +117,9 @@ export default function App() {
 
     else if (pago === 'contado') {
       setAprobacion(null); // No se muestra estado de aprobación para pago al contado
+      resultadoTexto = `Precio Base: $${precioBase.toFixed(2)}\n\n`;
+      resultadoTexto += `ITBMS (7%): $${impuesto.toFixed(2)}\n\n`;
+      resultadoTexto += `Total a Pagar: $${total.toFixed(2)}\n\n`;
     }
 
     setResultado(resultadoTexto);
